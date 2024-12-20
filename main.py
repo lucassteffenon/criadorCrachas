@@ -25,7 +25,7 @@ def add_text_to_image(image, text, position, font_path="arial.ttf", font_size=50
     draw.text(position, text, font=font, fill="black")
     return image
 
-def create_card(username, password, custom_text):
+def create_card(username, password, custom_text, save_directory):
     # Carregar imagem base do diretório
     image_path = "crachamodelo.jpg"
     try:
@@ -70,9 +70,9 @@ def save_text_data(username, custom_text, qr_data):
     with open("crachas_info.txt", "a") as file:
         file.write(f"Usuário: {username}\nTexto: {custom_text}\nQR Code Data: {qr_data}\n\n")
 
-def save_image(image, username):
+def save_image(image, username, save_directory):
     if image:
-        save_path = f"{username}.jpg"
+        save_path = os.path.join(save_directory, f"{username}.jpg")
         image.save(save_path)
         image.show()
         messagebox.showinfo("Sucesso", f"Imagem salva como '{save_path}'")
@@ -90,8 +90,12 @@ def main():
             messagebox.showerror("Erro", "Por favor, insira o nome do usuário e a senha.")
             return
 
-        card_image = create_card(username, password, custom_text)
-        save_image(card_image, username)
+        card_image = create_card(username, password, custom_text, save_directory)
+        save_image(card_image, username, save_directory)
+
+    save_directory = "C:\Users\e01st\OneDrive\Imagens\Trabalho\Crachás"  # Diretório onde as imagens serão salvas
+    if not os.path.exists(save_directory):
+        os.makedirs(save_directory)
 
     root = tk.Tk()
     root.title("Gerador de Crachá")
